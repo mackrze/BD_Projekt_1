@@ -25,6 +25,7 @@ public class LoginWindowController {
     private DBUtil dbUtil;
     private String login;
     private WypozyczalniaDAO wypozyczalniaDAO;
+    private Wszystkie_WypozyczeniaDAO wszystkie_wypozyczeniaDAO;
 
     public DBUtil getDbUtil() {
         return dbUtil;
@@ -65,6 +66,7 @@ public class LoginWindowController {
         connectionTextArea.appendText("Zalogowano");
         login = loginTextField.getText();
         wypozyczalniaDAO = new WypozyczalniaDAO(login,dbUtil);
+        wszystkie_wypozyczeniaDAO = new Wszystkie_WypozyczeniaDAO(login,dbUtil);
 
         FXMLLoader loader = new FXMLLoader(getClass().getResource("/fxml/KlientWindow.fxml"));
 
@@ -81,6 +83,7 @@ public class LoginWindowController {
         klientWindowController.dbUtil = this.dbUtil;
         klientWindowController.login = this.login;
         klientWindowController.wypozyczalniaDAO = this.wypozyczalniaDAO;
+        klientWindowController.wszystkie_wypozyczeniaDAO = this.wszystkie_wypozyczeniaDAO;
         stage.show();
 
         }

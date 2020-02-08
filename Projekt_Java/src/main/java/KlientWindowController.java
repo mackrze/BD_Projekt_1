@@ -4,6 +4,7 @@
 
 
 import java.net.URL;
+import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.Date;
 import java.util.ResourceBundle;
@@ -19,6 +20,7 @@ public class KlientWindowController {
     public DBUtil dbUtil;
     public String login;
     public WypozyczalniaDAO wypozyczalniaDAO;
+    public Wszystkie_WypozyczeniaDAO wszystkie_wypozyczeniaDAO;
     private boolean start = true;
 
 
@@ -29,7 +31,7 @@ public class KlientWindowController {
     private URL location;
 
     @FXML // fx:id="wypozyczalniaTableView"
-    private TableView<Wypozyczalnia> wypozyczalniaTableView; // Value injected by FXMLLoader
+    private TableView wypozyczalniaTableView; // Value injected by FXMLLoader
 
     @FXML // fx:id="nrResjestracyjnyCol"
     private TableColumn<Wypozyczalnia, String> nrResjestracyjnyCol; // Value injected by FXMLLoader
@@ -59,19 +61,31 @@ public class KlientWindowController {
     private Label wypozyczalniaLabel; // Value injected by FXMLLoader
 
     @FXML // fx:id="mojeWypozyczeniaTableView"
-    private TableView<?> mojeWypozyczeniaTableView; // Value injected by FXMLLoader
+    private TableView mojeWypozyczeniaTableView; // Value injected by FXMLLoader
 
     @FXML // fx:id="nrResjestracyjnyCol1"
-    private TableColumn<?, ?> nrResjestracyjnyCol1; // Value injected by FXMLLoader
+    private TableColumn<Wszystkie_Wypozyczenia, String> nrResjestracyjnyCol1; // Value injected by FXMLLoader
 
     @FXML // fx:id="markaCol1"
-    private TableColumn<?, ?> markaCol1; // Value injected by FXMLLoader
+    private TableColumn<Wszystkie_Wypozyczenia, String> markaCol1; // Value injected by FXMLLoader
 
     @FXML // fx:id="nazwaCol1"
-    private TableColumn<?, ?> nazwaCol1; // Value injected by FXMLLoader
+    private TableColumn<Wszystkie_Wypozyczenia, String> nazwaCol1; // Value injected by FXMLLoader
+
+    @FXML // fx:id="przejchanyDystansCol"
+    private TableColumn<Wszystkie_Wypozyczenia, Float> przejchanyDystansCol; // Value injected by FXMLLoader
+
+    @FXML // fx:id="kwotaDoZaplatyCol"
+    private TableColumn<Wszystkie_Wypozyczenia, Float> kwotaDoZaplatyCol; // Value injected by FXMLLoader
+
+    @FXML // fx:id="dataWypozyczeniaCol"
+    private TableColumn<Wszystkie_Wypozyczenia, Date> dataWypozyczeniaCol; // Value injected by FXMLLoader
+
+    @FXML // fx:id="dataOddaniaCol"
+    private TableColumn<Wszystkie_Wypozyczenia, Date> dataOddaniaCol; // Value injected by FXMLLoader
 
     @FXML // fx:id="statusCol"
-    private TableColumn<?, ?> statusCol; // Value injected by FXMLLoader
+    private TableColumn<Wszystkie_Wypozyczenia, String> statusCol; // Value injected by FXMLLoader
 
     @FXML // fx:id="mojeWypozyczeniaLabel"
     private Label mojeWypozyczeniaLabel; // Value injected by FXMLLoader
@@ -90,46 +104,95 @@ public class KlientWindowController {
 
     @FXML
     void oddajBtnClicked(ActionEvent event) {
+        String rejestracja = nrRejestracyjnyTextField.getText();
+        ObservableList<Wszystkie_Wypozyczenia> wszystkieWypozyczenias = mojeWypozyczeniaTableView.getItems();
+        for (int i = 0; i < wszystkieWypozyczenias.size(); i++) {
+            if (wszystkieWypozyczenias.get(i).getStatus_wypozyczenia().contains("trak") && wszystkieWypozyczenias.get(i).getNr_rejestracyjny().equals(rejestracja)) {
+                String selectStmt = "call oddaj ('" + rejestracja + "','" + login + "');";
+                consoleTextArea.setText("Auto oddano :) ");
+                try {
+                    dbUtil.dbExecuteUpdate(selectStmt);
+                } catch (SQLException e) {
+                    e.printStackTrace();
+                } catch (ClassNotFoundException e) {
+                    e.printStackTrace();
+                }
+                break;
+            } else {
+                if (i + 1 == wszystkieWypozyczenias.size())
+                    consoleTextArea.setText("Auto o podanym nr rejestracyjnym nie jest aktualnie przez Ciebie wypozyczone ");
+            }
+        }
 
+
+        odswiezTabele();
     }
 
     @FXML
     void wypozyczBtnClicked(ActionEvent event) {
-        consoleTextArea.setText("test: " + login);
-        wypozyczalniaTableView.getItems().clear();
-        try {
-            ObservableList<Wypozyczalnia> wypozyczalniaObservableList = wypozyczalniaDAO.pokazMozliweWypozyczenia();
-            populateWypozyczalnia(wypozyczalniaObservableList);
-        } catch (SQLException e) {
-            e.printStackTrace();
-        } catch (ClassNotFoundException e) {
-            e.printStackTrace();
+
+        String rejestracja = nrRejestracyjnyTextField.getText();
+        ObservableList<Wypozyczalnia> wypozyczalnias = wypozyczalniaTableView.getItems();
+        for (int i = 0; i < wypozyczalnias.size(); i++) {
+
+
+            if (wypozyczalnias.get(i).getNr_rejestracyjny().equals(rejestracja)) {
+                String selectStmt = "call wypozycz ('" + rejestracja + "','" + login + "');";
+                consoleTextArea.setText("Auto wypozyczono :) ");
+                try {
+                    dbUtil.dbExecuteUpdate(selectStmt);
+                } catch (SQLException e) {
+                    e.printStackTrace();
+                } catch (ClassNotFoundException e) {
+                    e.printStackTrace();
+                }
+                break;
+            } else {
+                if (i + 1 == wypozyczalnias.size())
+                    consoleTextArea.setText("Auto nie jest mozliwe do wypozyczenia");
+            }
         }
+        odswiezTabele();
+
     }
 
     @FXML
     void onMouseEntered(MouseEvent event) throws SQLException, ClassNotFoundException {
         if (start) {
-            wypozyczalniaTableView.getItems().clear();
-
-            ObservableList<Wypozyczalnia> wypozyczalniaObservableList = wypozyczalniaDAO.pokazMozliweWypozyczenia();
-
-            System.out.println(wypozyczalniaObservableList.get(0).getNr_rejestracyjny());
-            System.out.println(wypozyczalniaObservableList.get(1).getNr_rejestracyjny());
-            System.out.println(wypozyczalniaObservableList.get(2).getNr_rejestracyjny());
-           // populateWypozyczalnia(wypozyczalniaObservableList);
-            wypozyczalniaTableView.getItems().addAll(wypozyczalniaObservableList);
-            start = false;
-
-            // mam observable z rekoradmi bo widniejda ale nie wyswietla ich w table view
-
+            odswiezTabele();
         }
+        start = false;
     }
 
-    private void populateWypozyczalnia(ObservableList<Wypozyczalnia> wypozyczalniaObservableList) {
-        wypozyczalniaTableView.setItems(wypozyczalniaObservableList);
+    private void populateWypozyczalnia(ObservableList<Wypozyczalnia> wObservableList) {
+        wypozyczalniaTableView.setItems(wObservableList);
     }
 
+    private void populateWszystkie_Wypozyczenia(ObservableList<Wszystkie_Wypozyczenia> wObservableList) {
+        mojeWypozyczeniaTableView.setItems(wObservableList);
+    }
+
+    private void odswiezTabele() {
+        ObservableList<Wypozyczalnia> wypozyczalniaObservableList = null;
+        try {
+            wypozyczalniaObservableList = wypozyczalniaDAO.pokazMozliweWypozyczenia();
+        } catch (SQLException e) {
+            e.printStackTrace();
+        } catch (ClassNotFoundException e) {
+            e.printStackTrace();
+        }
+        populateWypozyczalnia(wypozyczalniaObservableList);
+
+        ObservableList<Wszystkie_Wypozyczenia> wszystkie_wypozyczeniaObservableList = null;
+        try {
+            wszystkie_wypozyczeniaObservableList = wszystkie_wypozyczeniaDAO.pokaz_moje_wypozyczenia();
+        } catch (SQLException e) {
+            e.printStackTrace();
+        } catch (ClassNotFoundException e) {
+            e.printStackTrace();
+        }
+        populateWszystkie_Wypozyczenia(wszystkie_wypozyczeniaObservableList);
+    }
 
     @FXML
         // This method is called by the FXMLLoader when initialization is complete
@@ -142,12 +205,15 @@ public class KlientWindowController {
         assert odlegloscNaPelnymLadowaniuCol != null : "fx:id=\"odlegloscNaPelnymLadowaniuCol\" was not injected: check your FXML file 'KlientWindow.fxml'.";
         assert stanLicznikaCol != null : "fx:id=\"stanLicznikaCol\" was not injected: check your FXML file 'KlientWindow.fxml'.";
         assert dataKoncaUbezpieczeniaCol != null : "fx:id=\"dataKoncaUbezpieczeniaCol\" was not injected: check your FXML file 'KlientWindow.fxml'.";
-        assert mozliwosc_wypozyczeniaCol != null : "fx:id=\"mozliwosc_wypozyczeniaCol\" was not injected: check your FXML file 'KlientWindow.fxml'.";
         assert wypozyczalniaLabel != null : "fx:id=\"wypozyczalniaLabel\" was not injected: check your FXML file 'KlientWindow.fxml'.";
         assert mojeWypozyczeniaTableView != null : "fx:id=\"mojeWypozyczeniaTableView\" was not injected: check your FXML file 'KlientWindow.fxml'.";
         assert nrResjestracyjnyCol1 != null : "fx:id=\"nrResjestracyjnyCol1\" was not injected: check your FXML file 'KlientWindow.fxml'.";
         assert markaCol1 != null : "fx:id=\"markaCol1\" was not injected: check your FXML file 'KlientWindow.fxml'.";
         assert nazwaCol1 != null : "fx:id=\"nazwaCol1\" was not injected: check your FXML file 'KlientWindow.fxml'.";
+        assert przejchanyDystansCol != null : "fx:id=\"przejchanyDystansCol\" was not injected: check your FXML file 'KlientWindow.fxml'.";
+        assert kwotaDoZaplatyCol != null : "fx:id=\"kwotaDoZaplatyCol\" was not injected: check your FXML file 'KlientWindow.fxml'.";
+        assert dataWypozyczeniaCol != null : "fx:id=\"dataWypozyczeniaCol\" was not injected: check your FXML file 'KlientWindow.fxml'.";
+        assert dataOddaniaCol != null : "fx:id=\"dataOddaniaCol\" was not injected: check your FXML file 'KlientWindow.fxml'.";
         assert statusCol != null : "fx:id=\"statusCol\" was not injected: check your FXML file 'KlientWindow.fxml'.";
         assert mojeWypozyczeniaLabel != null : "fx:id=\"mojeWypozyczeniaLabel\" was not injected: check your FXML file 'KlientWindow.fxml'.";
         assert nrRejestracyjnyTextField != null : "fx:id=\"nrRejestracyjnyTextField\" was not injected: check your FXML file 'KlientWindow.fxml'.";

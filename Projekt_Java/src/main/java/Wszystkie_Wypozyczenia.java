@@ -1,4 +1,6 @@
 import javafx.beans.property.FloatProperty;
+import javafx.beans.property.SimpleFloatProperty;
+import javafx.beans.property.SimpleStringProperty;
 import javafx.beans.property.StringProperty;
 
 import java.util.Date;
@@ -11,9 +13,21 @@ public class Wszystkie_Wypozyczenia {
     private StringProperty nazwa;
     private FloatProperty przejechany_dystans;
     private FloatProperty kwota;
-    private Date data_start ;
-    private Date data_oddania ;
+    private Date data_start;
+    private Date data_oddania;
     private StringProperty status_wypozyczenia;
+
+    public Wszystkie_Wypozyczenia() {
+        klient = new SimpleStringProperty();
+        nr_rejestracyjny = new SimpleStringProperty();
+        marka = new SimpleStringProperty();
+        nazwa = new SimpleStringProperty();
+        przejechany_dystans = new SimpleFloatProperty();
+        kwota = new SimpleFloatProperty();
+        data_start = new Date();
+        data_oddania = new Date();
+        status_wypozyczenia = new SimpleStringProperty();
+    }
 
     public String getKlient() {
         return klient.get();

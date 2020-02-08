@@ -17,7 +17,7 @@ public class WypozyczalniaDAO {
     }
 
     public ObservableList<Wypozyczalnia> pokazMozliweWypozyczenia() throws SQLException, ClassNotFoundException {
-        String selectStmt = "select nr_rejestracyjny,marka,nazwa,bateria,odleglosc_na_ladowaniu,stan_licznika,data_konca_ubezpieczenia from wypozyczalnia where mozliwosc_wypozyczenia = 1;";
+        String selectStmt = "select * from wypozyczalnia where mozliwosc_wypozyczenia = 1;";
         try {
 
             ResultSet resultSet = dbUtil.dbExecuteQuery(selectStmt);
@@ -47,9 +47,9 @@ public class WypozyczalniaDAO {
             w.setOdleglosc_na_ladowaniu(rs.getFloat("odleglosc_na_ladowaniu"));
             w.setStan_licznika(rs.getFloat("stan_licznika"));
             w.setData_konca_ubezpieczenia(rs.getDate("data_konca_ubezpieczenia"));
-            w.setMozliwosc_wypozyczenia(1);
+            w.setMozliwosc_wypozyczenia(rs.getInt("mozliwosc_wypozyczenia"));
             wypozyczalniaList.add(w);
-            System.out.println("Dodalem cos do listy: " + rs.getString("nr_rejestracyjny"));
+
         }
         return wypozyczalniaList;
     }

@@ -11,17 +11,17 @@ public class Wypozyczalnia {
     private FloatProperty odleglosc_na_ladowaniu;
     private FloatProperty stan_licznika;
     private Date data_konca_ubezpieczenia;
-    private FloatProperty mozliwosc_wypozyczenia;
+    private IntegerProperty mozliwosc_wypozyczenia;
 
     public Wypozyczalnia() {
-       nr_rejestracyjny = new SimpleStringProperty();
-      marka = new SimpleStringProperty();
+        nr_rejestracyjny = new SimpleStringProperty();
+        marka = new SimpleStringProperty();
         nazwa = new SimpleStringProperty();
-      bateria = new SimpleFloatProperty();
-      odleglosc_na_ladowaniu = new SimpleFloatProperty();
-     stan_licznika =new SimpleFloatProperty();
+        bateria = new SimpleFloatProperty();
+        odleglosc_na_ladowaniu = new SimpleFloatProperty();
+        stan_licznika = new SimpleFloatProperty();
         data_konca_ubezpieczenia = new Date();
-        mozliwosc_wypozyczenia = new SimpleFloatProperty();
+        mozliwosc_wypozyczenia = new SimpleIntegerProperty();
     }
 
     public String getNr_rejestracyjny() {
@@ -104,15 +104,15 @@ public class Wypozyczalnia {
         this.data_konca_ubezpieczenia = data_konca_ubezpieczenia;
     }
 
-    public float getMozliwosc_wypozyczenia() {
+    public int getMozliwosc_wypozyczenia() {
         return mozliwosc_wypozyczenia.get();
     }
 
-    public FloatProperty mozliwosc_wypozyczeniaProperty() {
+    public IntegerProperty mozliwosc_wypozyczeniaProperty() {
         return mozliwosc_wypozyczenia;
     }
 
-    public void setMozliwosc_wypozyczenia(float mozliwosc_wypozyczenia) {
+    public void setMozliwosc_wypozyczenia(int mozliwosc_wypozyczenia) {
         this.mozliwosc_wypozyczenia.set(mozliwosc_wypozyczenia);
     }
 }
