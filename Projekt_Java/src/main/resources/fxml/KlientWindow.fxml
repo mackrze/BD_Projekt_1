@@ -93,5 +93,6 @@
         <Button fx:id="wypozyczBtn" layoutX="162.0" layoutY="218.0" mnemonicParsing="false" onAction="#wypozyczBtnClicked" text="Wypożycz" AnchorPane.bottomAnchor="467.0" AnchorPane.leftAnchor="162.0" AnchorPane.rightAnchor="744.0" AnchorPane.topAnchor="218.0" />
         <Button fx:id="oddajBtn" layoutX="171.0" layoutY="261.0" mnemonicParsing="false" onAction="#oddajBtnClicked" text="Oddaj " AnchorPane.bottomAnchor="424.0" AnchorPane.leftAnchor="171.0" AnchorPane.rightAnchor="753.0" AnchorPane.topAnchor="261.0" />
         <TextArea fx:id="consoleTextArea" layoutX="62.0" layoutY="403.0" prefHeight="200.0" prefWidth="200.0" AnchorPane.bottomAnchor="107.0" AnchorPane.leftAnchor="62.0" AnchorPane.rightAnchor="714.0" AnchorPane.topAnchor="403.0" />
+      <Button fx:id="wylogujBtn" layoutX="910.0" layoutY="671.0" mnemonicParsing="false" onAction="#wylogujClicked" text="Wyloguj" />
     </children>
 </AnchorPane>

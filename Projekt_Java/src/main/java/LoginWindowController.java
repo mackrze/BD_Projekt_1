@@ -4,8 +4,10 @@
 
 import java.io.IOException;
 import java.net.URL;
+import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ResourceBundle;
+
 
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
@@ -27,17 +29,7 @@ public class LoginWindowController {
     private WypozyczalniaDAO wypozyczalniaDAO;
     private Wszystkie_WypozyczeniaDAO wszystkie_wypozyczeniaDAO;
 
-    public DBUtil getDbUtil() {
-        return dbUtil;
-    }
 
-    public String getLogin() {
-        return login;
-    }
-
-    public WypozyczalniaDAO getWypozyczalniaDAO() {
-        return wypozyczalniaDAO;
-    }
 
     @FXML // ResourceBundle that was given to the FXMLLoader
     private ResourceBundle resources;
@@ -65,28 +57,55 @@ public class LoginWindowController {
         dbUtil.dbConnect();
         connectionTextArea.appendText("Zalogowano");
         login = loginTextField.getText();
-        wypozyczalniaDAO = new WypozyczalniaDAO(login,dbUtil);
-        wszystkie_wypozyczeniaDAO = new Wszystkie_WypozyczeniaDAO(login,dbUtil);
+        wypozyczalniaDAO = new WypozyczalniaDAO(login, dbUtil);
+        wszystkie_wypozyczeniaDAO = new Wszystkie_WypozyczeniaDAO(login, dbUtil);
 
-        FXMLLoader loader = new FXMLLoader(getClass().getResource("/fxml/KlientWindow.fxml"));
+        String logujacy = "admin";
+
+        String selectStmt = "select id_klient from klienci where id_klient = '" + login + "';";
+        ResultSet resultSet = dbUtil.dbExecuteQuery(selectStmt);
+        while (resultSet.next()) {
+            logujacy = resultSet.getString("id_klient");
+        }
+        //System.out.println(logujacy);
+
+        if (!logujacy.equals("admin")) {
+
+            FXMLLoader loader = new FXMLLoader(getClass().getResource("/fxml/KlientWindow.fxml"));
 
 
-        Parent root = loader.load();
+            Parent root = loader.load();
 
 
-        //Get controller of modal window
-        KlientWindowController klientWindowController = loader.getController();
-        Stage stage = new Stage();
-        stage.setScene(new Scene(root));
-        stage.setTitle("Modal Window");
-        stage.initModality(Modality.WINDOW_MODAL);
-        klientWindowController.dbUtil = this.dbUtil;
-        klientWindowController.login = this.login;
-        klientWindowController.wypozyczalniaDAO = this.wypozyczalniaDAO;
-        klientWindowController.wszystkie_wypozyczeniaDAO = this.wszystkie_wypozyczeniaDAO;
-        stage.show();
+            //Get controller of modal window
+            KlientWindowController klientWindowController = loader.getController();
+            Stage stage = new Stage();
+            stage.setScene(new Scene(root));
+            stage.setTitle("Konto klienta");
+            stage.initModality(Modality.WINDOW_MODAL);
+            klientWindowController.dbUtil = this.dbUtil;
+            klientWindowController.login = this.login;
+            klientWindowController.wypozyczalniaDAO = this.wypozyczalniaDAO;
+            klientWindowController.wszystkie_wypozyczeniaDAO = this.wszystkie_wypozyczeniaDAO;
+            stage.show();
+        } else { //osoba zalogowana nie jest klientem a ma dostep do bazy wiec to admin
+            FXMLLoader loader = new FXMLLoader(getClass().getResource("/fxml/ObslugaWindow.fxml"));
+            Parent root = loader.load();
+
+            ObslugaWindowController obslugaWindowController = loader.getController();
+            Stage stage = new Stage();
+            stage.setScene(new Scene(root));
+            stage.setTitle("Konto obsługi");
+            stage.initModality(Modality.WINDOW_MODAL);
+            obslugaWindowController.dbUtil = this.dbUtil;
+            obslugaWindowController.login = this.login;
+            obslugaWindowController.wypozyczalniaDAO = this.wypozyczalniaDAO;
+            obslugaWindowController.wszystkie_wypozyczeniaDAO = this.wszystkie_wypozyczeniaDAO;
+            stage.show();
 
         }
+
+    }
 
     @FXML
         // This method is called by the FXMLLoader when initialization is complete

@@ -35,6 +35,23 @@ public class WypozyczalniaDAO {
 
     }
 
+    public ObservableList<Wypozyczalnia> pokazAuta() throws SQLException, ClassNotFoundException {
+        String selectStmt = "select * from wypozyczalnia ;";
+        try {
+
+            ResultSet resultSet = dbUtil.dbExecuteQuery(selectStmt);
+            ObservableList<Wypozyczalnia> wypozyczalniaObservableList = getWypozyczalniaList(resultSet);
+            return  wypozyczalniaObservableList;
+        } catch (SQLException e) {
+            e.printStackTrace();
+            throw e;
+        } catch (ClassNotFoundException e) {
+            e.printStackTrace();
+            throw e;
+        }
+    }
+
+
     private ObservableList<Wypozyczalnia> getWypozyczalniaList(ResultSet rs) throws SQLException {
         ObservableList<Wypozyczalnia> wypozyczalniaList = FXCollections.observableArrayList();
 

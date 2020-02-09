@@ -14,6 +14,7 @@ import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.scene.control.*;
 import javafx.scene.input.MouseEvent;
+import javafx.stage.Stage;
 
 public class KlientWindowController {
 
@@ -101,6 +102,16 @@ public class KlientWindowController {
 
     @FXML // fx:id="consoleTextArea"
     private TextArea consoleTextArea; // Value injected by FXMLLoader
+
+    @FXML // fx:id="wylogujBtn"
+    private Button wylogujBtn; // Value injected by FXMLLoader
+
+    @FXML
+    void wylogujClicked(ActionEvent event) {
+        Stage stage = (Stage) wylogujBtn.getScene().getWindow();
+        stage.close();
+
+    }
 
     @FXML
     void oddajBtnClicked(ActionEvent event) {
@@ -220,6 +231,7 @@ public class KlientWindowController {
         assert wypozyczBtn != null : "fx:id=\"wypozyczBtn\" was not injected: check your FXML file 'KlientWindow.fxml'.";
         assert oddajBtn != null : "fx:id=\"oddajBtn\" was not injected: check your FXML file 'KlientWindow.fxml'.";
         assert consoleTextArea != null : "fx:id=\"consoleTextArea\" was not injected: check your FXML file 'KlientWindow.fxml'.";
+        assert wylogujBtn != null : "fx:id=\"wylogujBtn\" was not injected: check your FXML file 'KlientWindow.fxml'.";
 
 
     }

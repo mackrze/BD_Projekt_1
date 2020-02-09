@@ -1,6 +1,7 @@
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 
+import java.sql.Date;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 
@@ -22,7 +23,32 @@ public class Wszystkie_WypozyczeniaDAO {
 
 
     }
+    public ObservableList<Wszystkie_Wypozyczenia> pokaz_wszystkie_wypozyczenia() throws SQLException, ClassNotFoundException {
+        String selectStmt = "select * from wszystkie_wypozyczenia ;";
+        ResultSet resultSet = dbUtil.dbExecuteQuery(selectStmt);
+        ObservableList<Wszystkie_Wypozyczenia> wszystkie_wypozyczeniaObservableList = getWszystkie_wypozyczenia(resultSet);
+        return wszystkie_wypozyczeniaObservableList;
 
+
+    }
+
+    public ObservableList<Wszystkie_Wypozyczenia> pokaz_wszystkie_wypozyczenia_danego_auta(String rejestracja) throws SQLException, ClassNotFoundException {
+        String selectStmt = "select * from wszystkie_wypozyczenia where nr_rejestracyjny = '"+rejestracja+"' ;";
+        ResultSet resultSet = dbUtil.dbExecuteQuery(selectStmt);
+        ObservableList<Wszystkie_Wypozyczenia> wszystkie_wypozyczeniaObservableList = getWszystkie_wypozyczenia(resultSet);
+        return wszystkie_wypozyczeniaObservableList;
+
+
+    }
+
+    public ObservableList<Wszystkie_Wypozyczenia> pokaz_wszystkie_wypozyczenia_zDnia_i_utarg(Date data) throws SQLException, ClassNotFoundException {
+        String selectStmt = "select * from wszystkie_wypozyczenia where data_oddania = '"+data+"' ;";
+        ResultSet resultSet = dbUtil.dbExecuteQuery(selectStmt);
+        ObservableList<Wszystkie_Wypozyczenia> wszystkie_wypozyczeniaObservableList = getWszystkie_wypozyczenia(resultSet);
+        return wszystkie_wypozyczeniaObservableList;
+
+
+    }
     private ObservableList<Wszystkie_Wypozyczenia> getWszystkie_wypozyczenia(ResultSet rs) throws SQLException {
         ObservableList<Wszystkie_Wypozyczenia> wszystkieWypozyczenia = FXCollections.observableArrayList();
 
